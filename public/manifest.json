@@ -1,19 +1,16 @@
 {
     "manifest_version": 3,
-    "description": "Simplify devtools for your web development",
     "name": "Simplify",
+    "description": "Simplify devtools for your web development",
     "version": "1.0.0",
     "action": {
         "default_popup": "index.html"
     },
     "permissions": [
+        "activeTab",
         "scripting"
-    ],
-    "host_permissions": [
-        "http://*/*",
-        "https://*/*"
     ],
     "icons": {
         "32": "icon.png"
     }
-} 
+}
