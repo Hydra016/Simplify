@@ -132,7 +132,7 @@ const App = () => {
           <div style="margin: 0; padding: 0;">
             <p style="margin: 0 0 12px; font-size: 14px; color: #495057; font-weight: 500; display: flex; align-items: center; gap: 8px;">
               <span style="color: #868e96;">📄</span>
-              Selected HTML
+              Selected Element
             </p>
             <div style="margin: 0; padding: 16px; width: 100%; box-shadow: inset 0 0 0 1px #e9ecef; max-height: 300px; overflow-y: scroll; border-radius: 8px; background-color: #f8f9fa; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;" id="overlay-content"></div>
           </div>
@@ -156,7 +156,7 @@ const App = () => {
 
         const dragStart = (e: MouseEvent) => {
           if (e.target === dragHandle || e.target === title || e.target === closeButton) {
-            isDragging = true;
+          isDragging = true;
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
             overlay.style.transition = 'none';
@@ -180,7 +180,7 @@ const App = () => {
 
         const dragEnd = () => {
           if (isDragging) {
-            isDragging = false;
+          isDragging = false;
             overlay.style.transition = 'all 0.2s ease';
           }
         };
@@ -196,11 +196,11 @@ const App = () => {
 
           if (target.id === "close-overlay") {
             closeOverlay();
-            return;
-          }
+              return;
+            }
 
-          if (isInsideOverlay) {
-            const targetElement = e.target as HTMLElement;
+            if (isInsideOverlay) {
+              const targetElement = e.target as HTMLElement;
 
             if (targetElement.tagName === "INPUT" ||
               targetElement.tagName === "SELECT" ||
@@ -209,13 +209,13 @@ const App = () => {
               return;
             }
 
-            e.stopPropagation();
-            e.preventDefault();
-            if (overlayContent) {
-              overlayContent.innerHTML = "<p>Click outside the overlay to inspect elements.</p>";
+              e.stopPropagation();
+              e.preventDefault();
+              if (overlayContent) {
+                overlayContent.innerHTML = "<p>Click outside the overlay to inspect elements.</p>";
+              }
+              return;
             }
-            return;
-          }
 
           const clickedLink = target.closest('a');
           if (clickedLink) {
@@ -227,7 +227,7 @@ const App = () => {
               const elementToInspect = clickedLink;
               removeAllOutlines();
               lastSelectedElement = elementToInspect;
-              lastSelectedElement.style.outline = "2px solid #007bff";
+            lastSelectedElement.style.outline = "2px solid #007bff";
 
               showInspectorForElement(elementToInspect);
             } else {
@@ -296,7 +296,7 @@ const App = () => {
         };
 
         function showInspectorForElement(element: HTMLElement) {
-          const { html, elementMap } = formatHTML(element);
+          const { html } = formatHTML(element);
           const computedStyle = window.getComputedStyle(element);
 
           const tabsContainer = document.createElement('div');
@@ -304,31 +304,63 @@ const App = () => {
           tabsContainer.style.gap = '8px';
           tabsContainer.style.marginBottom = '12px';
           tabsContainer.style.borderBottom = '1px solid #e9ecef';
-          tabsContainer.style.paddingBottom = '8px';
+          tabsContainer.style.padding = '12px 16px';
+          tabsContainer.style.position = 'sticky';
+          tabsContainer.style.top = '0';
+          tabsContainer.style.backgroundColor = '#ffffff';
+          tabsContainer.style.zIndex = '1';
+          tabsContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
 
           const htmlTab = document.createElement('button');
           htmlTab.textContent = 'HTML';
-          htmlTab.style.padding = '6px 12px';
+          htmlTab.style.padding = '8px 16px';
           htmlTab.style.border = 'none';
-          htmlTab.style.backgroundColor = '#f8f9fa';
-          htmlTab.style.borderRadius = '4px';
+          htmlTab.style.backgroundColor = '#e9ecef';
+          htmlTab.style.borderRadius = '6px';
           htmlTab.style.cursor = 'pointer';
-          htmlTab.style.fontSize = '13px';
+          htmlTab.style.fontSize = '14px';
           htmlTab.style.color = '#495057';
           htmlTab.style.fontWeight = '500';
           htmlTab.style.transition = 'all 0.2s ease';
+          htmlTab.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
 
           const cssTab = document.createElement('button');
           cssTab.textContent = 'CSS';
-          cssTab.style.padding = '6px 12px';
+          cssTab.style.padding = '8px 16px';
           cssTab.style.border = 'none';
-          cssTab.style.backgroundColor = '#f8f9fa';
-          cssTab.style.borderRadius = '4px';
+          cssTab.style.backgroundColor = '#e9ecef';
+          cssTab.style.borderRadius = '6px';
           cssTab.style.cursor = 'pointer';
-          cssTab.style.fontSize = '13px';
+          cssTab.style.fontSize = '14px';
           cssTab.style.color = '#495057';
           cssTab.style.fontWeight = '500';
           cssTab.style.transition = 'all 0.2s ease';
+          cssTab.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
+
+          const themeTab = document.createElement('button');
+          themeTab.textContent = 'Theme';
+          themeTab.style.padding = '8px 16px';
+          themeTab.style.border = 'none';
+          themeTab.style.backgroundColor = '#e9ecef';
+          themeTab.style.borderRadius = '6px';
+          themeTab.style.cursor = 'pointer';
+          themeTab.style.fontSize = '14px';
+          themeTab.style.color = '#495057';
+          themeTab.style.fontWeight = '500';
+          themeTab.style.transition = 'all 0.2s ease';
+          themeTab.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
+
+          themeTab.onmouseover = () => {
+            if (themeTab.style.backgroundColor !== '#dee2e6') {
+              themeTab.style.backgroundColor = '#dee2e6';
+            }
+          };
+
+          themeTab.onmouseout = () => {
+            if (themeTab.style.backgroundColor !== '#e9ecef') {
+              themeTab.style.backgroundColor = '#e9ecef';
+            }
+          };
 
           const htmlContent = document.createElement('div');
           htmlContent.style.display = 'block';
@@ -344,30 +376,6 @@ const App = () => {
               color: #2c3e50;
             ">${html}</pre>
           `;
-
-          const htmlTags = htmlContent.querySelectorAll('.html-tag');
-          htmlTags.forEach(tag => {
-            tag.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const elementIndex = parseInt((e.target as HTMLElement).getAttribute('data-index') || '0');
-              const selectedElement = elementMap.get(elementIndex) as HTMLElement;
-
-              if (selectedElement) {
-                removeAllOutlines();
-                lastSelectedElement = selectedElement;
-                lastSelectedElement.style.outline = "2px solid #007bff";
-                showInspectorForElement(lastSelectedElement);
-              }
-            });
-          });
-
-          const style = document.createElement('style');
-          style.textContent = `
-            .html-tag:hover {
-              background-color: rgba(52, 152, 219, 0.1);
-            }
-          `;
-          document.head.appendChild(style);
 
           const cssContent = document.createElement('div');
           cssContent.style.display = 'none';
@@ -412,18 +420,150 @@ const App = () => {
             </div>
           `;
 
+          const themeContent = document.createElement('div');
+          themeContent.style.display = 'none';
+          themeContent.style.padding = '16px';
+
+          const extractThemeColors = () => {
+            const colorUsage = new Map<string, number>();
+            const elements = document.querySelectorAll('*');
+            
+            elements.forEach(el => {
+              const style = window.getComputedStyle(el);
+              
+              const colors = [
+                rgbToHex(style.backgroundColor),
+                rgbToHex(style.color),
+                rgbToHex(style.borderColor)
+              ];
+
+              colors.forEach(color => {
+                if (color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)') {
+                  colorUsage.set(color, (colorUsage.get(color) || 0) + 1);
+                }
+              });
+            });
+
+            const sortedColors = Array.from(colorUsage.entries())
+              .sort((a, b) => b[1] - a[1])
+              .map(([color]) => color);
+
+            const primaryColor = sortedColors[0] || '#000000';
+            const secondaryColor = sortedColors[1] || '#000000';
+            const otherColors = sortedColors.slice(2);
+
+            const createColorSection = (title: string, colors: string[]) => {
+              const section = document.createElement('div');
+              section.style.marginBottom = '16px';
+
+              const sectionTitle = document.createElement('h4');
+              sectionTitle.textContent = title;
+              sectionTitle.style.margin = '0 0 8px 0';
+              sectionTitle.style.fontSize = '14px';
+              sectionTitle.style.color = '#495057';
+              sectionTitle.style.fontWeight = '600';
+
+              const colorsGrid = document.createElement('div');
+              colorsGrid.style.display = 'grid';
+              colorsGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+              colorsGrid.style.gap = '8px';
+
+              colors.forEach(color => {
+                const colorItem = document.createElement('div');
+                colorItem.style.display = 'flex';
+                colorItem.style.alignItems = 'center';
+                colorItem.style.gap = '8px';
+                colorItem.style.padding = '8px';
+                colorItem.style.backgroundColor = '#f8f9fa';
+                colorItem.style.borderRadius = '6px';
+                colorItem.style.transition = 'all 0.2s ease';
+
+                const colorPreview = document.createElement('div');
+                colorPreview.style.width = '24px';
+                colorPreview.style.height = '24px';
+                colorPreview.style.borderRadius = '4px';
+                colorPreview.style.backgroundColor = color;
+                colorPreview.style.border = '1px solid #e9ecef';
+
+                const colorCode = document.createElement('span');
+                colorCode.textContent = color;
+                colorCode.style.fontFamily = 'monospace';
+                colorCode.style.fontSize = '13px';
+                colorCode.style.color = '#495057';
+
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copy';
+                copyButton.style.marginLeft = 'auto';
+                copyButton.style.padding = '4px 8px';
+                copyButton.style.backgroundColor = '#e9ecef';
+                copyButton.style.border = 'none';
+                copyButton.style.borderRadius = '4px';
+                copyButton.style.cursor = 'pointer';
+                copyButton.style.fontSize = '12px';
+                copyButton.style.color = '#495057';
+                copyButton.style.transition = 'all 0.2s ease';
+
+                copyButton.onmouseover = () => {
+                  copyButton.style.backgroundColor = '#dee2e6';
+                };
+
+                copyButton.onmouseout = () => {
+                  copyButton.style.backgroundColor = '#e9ecef';
+                };
+
+                copyButton.onclick = () => {
+                  navigator.clipboard.writeText(color);
+                  copyButton.textContent = 'Copied!';
+                  setTimeout(() => {
+                    copyButton.textContent = 'Copy';
+                  }, 2000);
+                };
+
+                colorItem.appendChild(colorPreview);
+                colorItem.appendChild(colorCode);
+                colorItem.appendChild(copyButton);
+                colorsGrid.appendChild(colorItem);
+              });
+
+              section.appendChild(sectionTitle);
+              section.appendChild(colorsGrid);
+              return section;
+            };
+
+            themeContent.innerHTML = '';
+            themeContent.appendChild(createColorSection('Primary Color', [primaryColor]));
+            themeContent.appendChild(createColorSection('Secondary Color', [secondaryColor]));
+            if (otherColors.length > 0) {
+              themeContent.appendChild(createColorSection('Other Colors', otherColors));
+            }
+          };
+
           htmlTab.addEventListener('click', () => {
             htmlTab.style.backgroundColor = '#e9ecef';
             cssTab.style.backgroundColor = '#f8f9fa';
+            themeTab.style.backgroundColor = '#f8f9fa';
             htmlContent.style.display = 'block';
             cssContent.style.display = 'none';
+            themeContent.style.display = 'none';
           });
 
           cssTab.addEventListener('click', () => {
             cssTab.style.backgroundColor = '#e9ecef';
             htmlTab.style.backgroundColor = '#f8f9fa';
+            themeTab.style.backgroundColor = '#f8f9fa';
             cssContent.style.display = 'block';
             htmlContent.style.display = 'none';
+            themeContent.style.display = 'none';
+          });
+
+          themeTab.addEventListener('click', () => {
+            themeTab.style.backgroundColor = '#dee2e6';
+            htmlTab.style.backgroundColor = '#e9ecef';
+            cssTab.style.backgroundColor = '#e9ecef';
+            themeContent.style.display = 'block';
+            htmlContent.style.display = 'none';
+            cssContent.style.display = 'none';
+            extractThemeColors();
           });
 
           htmlTab.style.backgroundColor = '#e9ecef';
@@ -432,8 +572,10 @@ const App = () => {
           content.appendChild(tabsContainer);
           content.appendChild(htmlContent);
           content.appendChild(cssContent);
+          content.appendChild(themeContent);
           tabsContainer.appendChild(htmlTab);
           tabsContainer.appendChild(cssTab);
+          tabsContainer.appendChild(themeTab);
 
           (overlayContent as HTMLElement).innerHTML = '';
           (overlayContent as HTMLElement).appendChild(content);
@@ -442,7 +584,7 @@ const App = () => {
           existingInputDivs.forEach(div => div.remove());
 
           const tagName = element.tagName.toLowerCase();
-          let styleInputsTemplate = "";
+            let styleInputsTemplate = "";
 
           const hasImage = element.querySelector('img');
           const hasText = element.textContent?.trim() !== '';
@@ -758,8 +900,8 @@ const App = () => {
           }
 
           if (isTextElement || hasText) {
-            const fontSize = parseInt(computedStyle.fontSize, 10);
-            const color = rgbToHex(computedStyle.color);
+              const fontSize = parseInt(computedStyle.fontSize, 10);
+              const color = rgbToHex(computedStyle.color);
             const fontWeight = computedStyle.fontWeight;
             const fontFamily = computedStyle.fontFamily.split(',')[0].replace(/['"]/g, '').trim();
             const baseFontFamily = window.getComputedStyle(document.body).fontFamily.split(',')[0].replace(/['"]/g, '').trim();
@@ -826,8 +968,8 @@ const App = () => {
 
           if (isLayoutElement) {
             // const padding = parseInt(computedStyle.padding, 10);
-            const margin = parseInt(computedStyle.margin, 10);
-            const backgroundColor = rgbToHex(computedStyle.backgroundColor);
+              const margin = parseInt(computedStyle.margin, 10);
+              const backgroundColor = rgbToHex(computedStyle.backgroundColor);
             const bodyBackgroundColor = rgbToHex(window.getComputedStyle(document.body).backgroundColor);
             const safeBg = backgroundColor === "transparent" || backgroundColor === "rgba(0, 0, 0, 0)" ? bodyBackgroundColor : backgroundColor;
             const borderWidth = parseInt(computedStyle.borderWidth, 10);
@@ -847,20 +989,20 @@ const App = () => {
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                       <label style="font-size: 11px; color: #868e96;">Top</label>
                       <input type="number" value="${parseInt(computedStyle.paddingTop)}" id="padding-top-input" style="padding: 6px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;" />
-                    </div>
+                </div>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                       <label style="font-size: 11px; color: #868e96;">Right</label>
                       <input type="number" value="${parseInt(computedStyle.paddingRight)}" id="padding-right-input" style="padding: 6px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;" />
-                    </div>
+                </div>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                       <label style="font-size: 11px; color: #868e96;">Bottom</label>
                       <input type="number" value="${parseInt(computedStyle.paddingBottom)}" id="padding-bottom-input" style="padding: 6px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;" />
-                    </div>
+                </div>
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                       <label style="font-size: 11px; color: #868e96;">Left</label>
                       <input type="number" value="${parseInt(computedStyle.paddingLeft)}" id="padding-left-input" style="padding: 6px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; width: 100%; box-sizing: border-box;" />
-                    </div>
-                  </div>
+                </div>
+                </div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
                   <label style="font-size: 13px; color: #495057; font-weight: 500;">Margin</label>
@@ -977,12 +1119,12 @@ const App = () => {
                 </div>
               </div>
               `;
-          }
+            }
 
-          overlayContent!.insertAdjacentHTML("afterend", styleInputsTemplate);
+            overlayContent!.insertAdjacentHTML("afterend", styleInputsTemplate);
 
-          const fontSizeInput = document.getElementById("font-size-input") as HTMLInputElement;
-          fontSizeInput?.addEventListener("input", (e) => {
+            const fontSizeInput = document.getElementById("font-size-input") as HTMLInputElement;
+            fontSizeInput?.addEventListener("input", (e) => {
             element.style.fontSize = `${(e.target as HTMLInputElement).value}px`;
           });
 
@@ -1027,20 +1169,20 @@ const App = () => {
             const value = (e.target as HTMLInputElement).value;
             element.style.setProperty('--hover-color', value);
             if (hoverColorInput) hoverColorInput.value = value;
-          });
+            });
 
-          const colorInput = document.getElementById("color-input") as HTMLInputElement;
-          const colorHexInput = document.getElementById("color-hex-input") as HTMLInputElement;
-          colorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
+            const colorInput = document.getElementById("color-input") as HTMLInputElement;
+            const colorHexInput = document.getElementById("color-hex-input") as HTMLInputElement;
+            colorInput?.addEventListener("input", (e) => {
+              const value = (e.target as HTMLInputElement).value;
             element.style.color = value;
-            if (colorHexInput) colorHexInput.value = value;
-          });
-          colorHexInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
+              if (colorHexInput) colorHexInput.value = value;
+            });
+            colorHexInput?.addEventListener("input", (e) => {
+              const value = (e.target as HTMLInputElement).value;
             element.style.color = value;
-            if (colorInput) colorInput.value = value;
-          });
+              if (colorInput) colorInput.value = value;
+            });
 
           const paddingTopInput = document.getElementById("padding-top-input") as HTMLInputElement;
           paddingTopInput?.addEventListener("input", (e) => {
@@ -1060,25 +1202,25 @@ const App = () => {
           const paddingLeftInput = document.getElementById("padding-left-input") as HTMLInputElement;
           paddingLeftInput?.addEventListener("input", (e) => {
             element.style.paddingLeft = `${(e.target as HTMLInputElement).value}px`;
-          });
+            });
 
-          const marginInput = document.getElementById("margin-input") as HTMLInputElement;
-          marginInput?.addEventListener("input", (e) => {
+            const marginInput = document.getElementById("margin-input") as HTMLInputElement;
+            marginInput?.addEventListener("input", (e) => {
             element.style.margin = `${(e.target as HTMLInputElement).value}px`;
-          });
+            });
 
-          const bgColorInput = document.getElementById("background-color-input") as HTMLInputElement;
-          const bgColorHexInput = document.getElementById("background-color-hex-input") as HTMLInputElement;
-          bgColorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
+            const bgColorInput = document.getElementById("background-color-input") as HTMLInputElement;
+            const bgColorHexInput = document.getElementById("background-color-hex-input") as HTMLInputElement;
+            bgColorInput?.addEventListener("input", (e) => {
+              const value = (e.target as HTMLInputElement).value;
             element.style.backgroundColor = value;
-            if (bgColorHexInput) bgColorHexInput.value = value;
-          });
-          bgColorHexInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
+              if (bgColorHexInput) bgColorHexInput.value = value;
+            });
+            bgColorHexInput?.addEventListener("input", (e) => {
+              const value = (e.target as HTMLInputElement).value;
             element.style.backgroundColor = value;
-            if (bgColorInput) bgColorInput.value = value;
-          });
+              if (bgColorInput) bgColorInput.value = value;
+            });
 
           const borderWidthInput = document.getElementById("border-width-input") as HTMLInputElement;
           borderWidthInput?.addEventListener("input", (e) => {
@@ -1227,15 +1369,15 @@ const App = () => {
           const alignItemsInput = document.getElementById("align-items-input") as HTMLSelectElement;
           alignItemsInput?.addEventListener("change", (e) => {
             element.style.alignItems = (e.target as HTMLSelectElement).value;
-          });
+            });
 
-          const widthInput = document.getElementById("width-input") as HTMLInputElement;
-          widthInput?.addEventListener("input", (e) => {
+            const widthInput = document.getElementById("width-input") as HTMLInputElement;
+            widthInput?.addEventListener("input", (e) => {
             element.style.width = `${(e.target as HTMLInputElement).value}px`;
-          });
+            });
 
-          const heightInput = document.getElementById("height-input") as HTMLInputElement;
-          heightInput?.addEventListener("input", (e) => {
+            const heightInput = document.getElementById("height-input") as HTMLInputElement;
+            heightInput?.addEventListener("input", (e) => {
             element.style.height = `${(e.target as HTMLInputElement).value}px`;
           });
 
@@ -1297,27 +1439,33 @@ const App = () => {
         fontSize: "14px",
         color: "#666",
         lineHeight: "1.4"
-      }}>Click the button below to start inspecting and modifying styles on the current page.</p>
+      }}>Click the buttons below to start inspecting styles or extract theme colors from the current page.</p>
+      <div style={{
+        display: "flex",
+        gap: "10px",
+        width: "100%"
+      }}>
       <button
         onClick={onClick}
         style={{
-          padding: "12px 20px",
+            flex: 1,
+            padding: "12px 20px",
           backgroundColor: "#007bff",
           color: "white",
           border: "none",
-          borderRadius: "6px",
+            borderRadius: "6px",
           cursor: "pointer",
-          fontSize: "14px",
-          fontWeight: "500",
-          transition: "background-color 0.2s",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          width: "100%"
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "background-color 0.2s",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#0056b3"}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#007bff"}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#0056b3"}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#007bff"}
       >
         Open Inspector
       </button>
+      </div>
     </div>
   );
 };
