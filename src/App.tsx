@@ -20,7 +20,6 @@ const App = () => {
         const pickerId = "__picker-overlay";
         if (document.getElementById(pickerId)) return;
 
-        // Function to remove outline from all elements
         const removeAllOutlines = () => {
           const elements = document.querySelectorAll('*');
           elements.forEach(el => {
@@ -50,7 +49,6 @@ const App = () => {
         overlay.style.userSelect = "none";
         overlay.style.transition = "all 0.2s ease";
 
-        // Add drag handle
         const dragHandle = document.createElement("div");
         dragHandle.style.position = "relative";
         dragHandle.style.flexShrink = "0";
@@ -75,7 +73,6 @@ const App = () => {
         title.style.alignItems = "center";
         title.style.gap = "8px";
 
-        // Add icon to title
         const icon = document.createElement("span");
         icon.innerHTML = "🎨";
         icon.style.fontSize = "18px";
@@ -106,7 +103,6 @@ const App = () => {
           closeButton.style.color = "#6c757d";
         };
 
-        // Create a separate function for closing
         const closeOverlay = () => {
           if (lastSelectedElement) {
             lastSelectedElement.style.outline = "";
@@ -116,7 +112,6 @@ const App = () => {
             overlay.parentNode.removeChild(overlay);
           }
           removeAllOutlines();
-          // Remove the click event listener
           document.removeEventListener("click", handleClick, true);
         };
 
@@ -126,7 +121,6 @@ const App = () => {
         dragHandle.appendChild(closeButton);
         overlay.appendChild(dragHandle);
 
-        // Add content container
         const content = document.createElement("div");
         content.style.flex = "1";
         content.style.overflowY = "auto";
@@ -152,7 +146,6 @@ const App = () => {
         let lastSelectedElement: HTMLElement | null = null;
         let isFirstClick = true;
 
-        // Draggable functionality
         let isDragging = false;
         let currentX: number = 0;
         let currentY: number = 0;
@@ -197,11 +190,10 @@ const App = () => {
         document.addEventListener("mouseup", dragEnd);
         document.addEventListener("mouseleave", dragEnd);
 
-        // Create click handler function
         const handleClick = (e: MouseEvent) => {
           const target = e.target as HTMLElement;
           const isInsideOverlay = target.closest(`#${pickerId}`);
-          
+
           if (target.id === "close-overlay") {
             closeOverlay();
             return;
@@ -209,12 +201,11 @@ const App = () => {
 
           if (isInsideOverlay) {
             const targetElement = e.target as HTMLElement;
-            
-            // Allow clicks on input elements and HTML tags
-            if (targetElement.tagName === "INPUT" || 
-                targetElement.tagName === "SELECT" || 
-                targetElement.tagName === "BUTTON" ||
-                targetElement.classList.contains('html-tag')) {
+
+            if (targetElement.tagName === "INPUT" ||
+              targetElement.tagName === "SELECT" ||
+              targetElement.tagName === "BUTTON" ||
+              targetElement.classList.contains('html-tag')) {
               return;
             }
 
@@ -226,15 +217,13 @@ const App = () => {
             return;
           }
 
-          // Check if the clicked element or its parent is a link
           const clickedLink = target.closest('a');
           if (clickedLink) {
             if (isFirstClick) {
               isFirstClick = false;
               e.preventDefault();
               e.stopPropagation();
-              
-              // Use the link element for inspection
+
               const elementToInspect = clickedLink;
               removeAllOutlines();
               lastSelectedElement = elementToInspect;
@@ -242,13 +231,11 @@ const App = () => {
 
               showInspectorForElement(elementToInspect);
             } else {
-              // On second click, allow the link to work normally
               isFirstClick = true;
               removeAllOutlines();
-              return; // Let the click event propagate normally
+              return;
             }
           } else {
-            // For non-link elements, always show inspector on first click
             removeAllOutlines();
             lastSelectedElement = target;
             lastSelectedElement.style.outline = "2px solid #007bff";
@@ -256,37 +243,35 @@ const App = () => {
           }
         };
 
-        // Add the click event listener with capture phase
         document.addEventListener("click", handleClick, true);
 
-        // Function to format HTML with indentation and syntax highlighting
         const formatHTML = (element: HTMLElement) => {
           const elementMap = new Map<number, Element>();
           let counter = 0;
-          
+
           const formatNode = (node: Node, level: number = 0) => {
             let result = '';
             const indent = ' '.repeat(level);
-            
+
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
               const tagName = element.tagName.toLowerCase();
               const elementIndex = counter++;
               elementMap.set(elementIndex, element);
-              
+
               const attributes = Array.from(element.attributes)
                 .map(attr => ` <span style="color: #9b59b6;">${attr.name}</span>="<span style="color: #e67e22;">${attr.value}</span>"`)
                 .join('');
-              
+
               const tagStyle = `color: #3498db; 
                        cursor: pointer; 
                        user-select: none;
                        padding: 2px 4px;
                        border-radius: 3px;
                        transition: all 0.2s ease;`;
-              
+
               result += `${indent}<span class="html-tag" data-index="${elementIndex}" style="${tagStyle}">&lt;${tagName}</span>${attributes}<span class="html-tag" data-index="${elementIndex}" style="${tagStyle}">&gt;</span>\n`;
-              
+
               if (element.childNodes.length > 0) {
                 for (const child of Array.from(element.childNodes)) {
                   result += formatNode(child, level + 1);
@@ -302,10 +287,10 @@ const App = () => {
                 result += `${indent}<span style="color: #2c3e50;">${text}</span>\n`;
               }
             }
-            
+
             return result;
           };
-          
+
           const html = formatNode(element);
           return { html, elementMap };
         };
@@ -313,8 +298,7 @@ const App = () => {
         function showInspectorForElement(element: HTMLElement) {
           const { html, elementMap } = formatHTML(element);
           const computedStyle = window.getComputedStyle(element);
-          
-          // Create tabs container
+
           const tabsContainer = document.createElement('div');
           tabsContainer.style.display = 'flex';
           tabsContainer.style.gap = '8px';
@@ -322,7 +306,6 @@ const App = () => {
           tabsContainer.style.borderBottom = '1px solid #e9ecef';
           tabsContainer.style.paddingBottom = '8px';
 
-          // Create HTML tab
           const htmlTab = document.createElement('button');
           htmlTab.textContent = 'HTML';
           htmlTab.style.padding = '6px 12px';
@@ -335,7 +318,6 @@ const App = () => {
           htmlTab.style.fontWeight = '500';
           htmlTab.style.transition = 'all 0.2s ease';
 
-          // Create CSS tab
           const cssTab = document.createElement('button');
           cssTab.textContent = 'CSS';
           cssTab.style.padding = '6px 12px';
@@ -348,7 +330,6 @@ const App = () => {
           cssTab.style.fontWeight = '500';
           cssTab.style.transition = 'all 0.2s ease';
 
-          // Create content containers
           const htmlContent = document.createElement('div');
           htmlContent.style.display = 'block';
           htmlContent.innerHTML = `
@@ -364,14 +345,13 @@ const App = () => {
             ">${html}</pre>
           `;
 
-          // Add click handlers for HTML tags
           const htmlTags = htmlContent.querySelectorAll('.html-tag');
           htmlTags.forEach(tag => {
             tag.addEventListener('click', (e) => {
               e.stopPropagation();
               const elementIndex = parseInt((e.target as HTMLElement).getAttribute('data-index') || '0');
               const selectedElement = elementMap.get(elementIndex) as HTMLElement;
-              
+
               if (selectedElement) {
                 removeAllOutlines();
                 lastSelectedElement = selectedElement;
@@ -381,7 +361,6 @@ const App = () => {
             });
           });
 
-          // Add hover styles for HTML tags
           const style = document.createElement('style');
           style.textContent = `
             .html-tag:hover {
@@ -390,11 +369,9 @@ const App = () => {
           `;
           document.head.appendChild(style);
 
-          // Create CSS content
           const cssContent = document.createElement('div');
           cssContent.style.display = 'none';
-          
-          // Format CSS styles
+
           let cssStyles = '';
           const styleProperties = [
             'display', 'position', 'top', 'right', 'bottom', 'left',
@@ -435,7 +412,6 @@ const App = () => {
             </div>
           `;
 
-          // Add tab click handlers
           htmlTab.addEventListener('click', () => {
             htmlTab.style.backgroundColor = '#e9ecef';
             cssTab.style.backgroundColor = '#f8f9fa';
@@ -450,10 +426,8 @@ const App = () => {
             htmlContent.style.display = 'none';
           });
 
-          // Set initial active tab
           htmlTab.style.backgroundColor = '#e9ecef';
 
-          // Assemble the content
           const content = document.createElement('div');
           content.appendChild(tabsContainer);
           content.appendChild(htmlContent);
@@ -464,14 +438,12 @@ const App = () => {
           (overlayContent as HTMLElement).innerHTML = '';
           (overlayContent as HTMLElement).appendChild(content);
 
-          // Remove all previous input sections
           const existingInputDivs = overlayContent!.parentElement!.querySelectorAll('div[style*="display: grid"]');
           existingInputDivs.forEach(div => div.remove());
 
           const tagName = element.tagName.toLowerCase();
           let styleInputsTemplate = "";
 
-          // Check for nested elements
           const hasImage = element.querySelector('img');
           const hasText = element.textContent?.trim() !== '';
           const isLink = tagName === 'a' || tagName === 'button';
@@ -479,13 +451,11 @@ const App = () => {
           const isTextElement = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", "strong", "b", "a"].includes(tagName);
           const isLayoutElement = ["div", "section", "article", "main", "header", "footer", "nav", "aside", "form"].includes(tagName);
 
-          // Show styles only if an element is selected
           if (!element || element === document.body) {
             const bodyStyle = window.getComputedStyle(document.body);
             const bodyWidth = parseInt(bodyStyle.width, 10);
             const bodyHeight = parseInt(bodyStyle.height, 10);
             const bodyMargin = parseInt(bodyStyle.margin, 10);
-            // const bodyPadding = parseInt(bodyStyle.padding, 10);
             const bodyBackgroundColor = rgbToHex(bodyStyle.backgroundColor);
             const bodyColor = rgbToHex(bodyStyle.color);
             const bodyFontSize = parseInt(bodyStyle.fontSize, 10);
@@ -494,7 +464,7 @@ const App = () => {
             const bodyDisplay = bodyStyle.display;
             const bodyPosition = bodyStyle.position;
             const bodyOverflow = bodyStyle.overflow;
-            
+
             overlayContent!.insertAdjacentHTML("afterend", `
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -602,7 +572,6 @@ const App = () => {
               </div>
             `);
 
-            // Add event listeners for body styles
             const widthInput = document.getElementById("width-input") as HTMLInputElement;
             widthInput?.addEventListener("input", (e) => {
               document.body.style.width = `${(e.target as HTMLInputElement).value}px`;
@@ -697,12 +666,11 @@ const App = () => {
             return;
           }
 
-          // Show link-specific styles
           if (isLink) {
             const linkStyle = window.getComputedStyle(element);
             const textDecoration = linkStyle.textDecoration;
             const hoverColor = linkStyle.getPropertyValue('--hover-color') || '#0056b3';
-            
+
             styleInputsTemplate += `
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -725,7 +693,6 @@ const App = () => {
             `;
           }
 
-          // Show image-specific styles
           if (isImage || hasImage) {
             const width = parseInt(computedStyle.width, 10);
             const height = parseInt(computedStyle.height, 10);
@@ -733,7 +700,7 @@ const App = () => {
             const borderRadius = parseInt(computedStyle.borderRadius, 10);
             const opacity = parseFloat(computedStyle.opacity);
             const filter = computedStyle.filter;
-            
+
             styleInputsTemplate += `
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -790,17 +757,16 @@ const App = () => {
             `;
           }
 
-          // Show text-specific styles
           if (isTextElement || hasText) {
-              const fontSize = parseInt(computedStyle.fontSize, 10);
-              const color = rgbToHex(computedStyle.color);
+            const fontSize = parseInt(computedStyle.fontSize, 10);
+            const color = rgbToHex(computedStyle.color);
             const fontWeight = computedStyle.fontWeight;
             const fontFamily = computedStyle.fontFamily.split(',')[0].replace(/['"]/g, '').trim();
             const baseFontFamily = window.getComputedStyle(document.body).fontFamily.split(',')[0].replace(/['"]/g, '').trim();
             // const lineHeight = computedStyle.lineHeight;
             // const letterSpacing = computedStyle.letterSpacing;
             // const textAlign = computedStyle.textAlign;
-            
+
             styleInputsTemplate += `
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -854,17 +820,16 @@ const App = () => {
                     <option value="'Lucida Console', monospace" style="font-family: 'Lucida Console', monospace;">Lucida Console</option>
                   </select>
                 </div>
-              </div>
-            `;
+                </div>
+              `;
           }
 
-          // Show layout-specific styles
           if (isLayoutElement) {
-              // const padding = parseInt(computedStyle.padding, 10);
-              const margin = parseInt(computedStyle.margin, 10);
-              const backgroundColor = rgbToHex(computedStyle.backgroundColor);
-              const bodyBackgroundColor = rgbToHex(window.getComputedStyle(document.body).backgroundColor);
-              const safeBg = backgroundColor === "transparent" || backgroundColor === "rgba(0, 0, 0, 0)" ? bodyBackgroundColor : backgroundColor;
+            // const padding = parseInt(computedStyle.padding, 10);
+            const margin = parseInt(computedStyle.margin, 10);
+            const backgroundColor = rgbToHex(computedStyle.backgroundColor);
+            const bodyBackgroundColor = rgbToHex(window.getComputedStyle(document.body).backgroundColor);
+            const safeBg = backgroundColor === "transparent" || backgroundColor === "rgba(0, 0, 0, 0)" ? bodyBackgroundColor : backgroundColor;
             const borderWidth = parseInt(computedStyle.borderWidth, 10);
             const borderColor = rgbToHex(computedStyle.borderColor);
             const borderRadius = parseInt(computedStyle.borderRadius, 10);
@@ -873,7 +838,7 @@ const App = () => {
             const flexDirection = computedStyle.flexDirection;
             const justifyContent = computedStyle.justifyContent;
             const alignItems = computedStyle.alignItems;
-            
+
             styleInputsTemplate += `
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
                 <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -1012,13 +977,12 @@ const App = () => {
                 </div>
               </div>
               `;
-            }
+          }
 
-            overlayContent!.insertAdjacentHTML("afterend", styleInputsTemplate);
+          overlayContent!.insertAdjacentHTML("afterend", styleInputsTemplate);
 
-            // Bind input events
-            const fontSizeInput = document.getElementById("font-size-input") as HTMLInputElement;
-            fontSizeInput?.addEventListener("input", (e) => {
+          const fontSizeInput = document.getElementById("font-size-input") as HTMLInputElement;
+          fontSizeInput?.addEventListener("input", (e) => {
             element.style.fontSize = `${(e.target as HTMLInputElement).value}px`;
           });
 
@@ -1063,58 +1027,58 @@ const App = () => {
             const value = (e.target as HTMLInputElement).value;
             element.style.setProperty('--hover-color', value);
             if (hoverColorInput) hoverColorInput.value = value;
-            });
+          });
 
-            const colorInput = document.getElementById("color-input") as HTMLInputElement;
-            const colorHexInput = document.getElementById("color-hex-input") as HTMLInputElement;
-            colorInput?.addEventListener("input", (e) => {
-              const value = (e.target as HTMLInputElement).value;
+          const colorInput = document.getElementById("color-input") as HTMLInputElement;
+          const colorHexInput = document.getElementById("color-hex-input") as HTMLInputElement;
+          colorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
             element.style.color = value;
-              if (colorHexInput) colorHexInput.value = value;
-            });
-            colorHexInput?.addEventListener("input", (e) => {
-              const value = (e.target as HTMLInputElement).value;
+            if (colorHexInput) colorHexInput.value = value;
+          });
+          colorHexInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
             element.style.color = value;
-              if (colorInput) colorInput.value = value;
-            });
+            if (colorInput) colorInput.value = value;
+          });
 
-            const paddingTopInput = document.getElementById("padding-top-input") as HTMLInputElement;
-            paddingTopInput?.addEventListener("input", (e) => {
-              element.style.paddingTop = `${(e.target as HTMLInputElement).value}px`;
-            });
+          const paddingTopInput = document.getElementById("padding-top-input") as HTMLInputElement;
+          paddingTopInput?.addEventListener("input", (e) => {
+            element.style.paddingTop = `${(e.target as HTMLInputElement).value}px`;
+          });
 
-            const paddingRightInput = document.getElementById("padding-right-input") as HTMLInputElement;
-            paddingRightInput?.addEventListener("input", (e) => {
-              element.style.paddingRight = `${(e.target as HTMLInputElement).value}px`;
-            });
+          const paddingRightInput = document.getElementById("padding-right-input") as HTMLInputElement;
+          paddingRightInput?.addEventListener("input", (e) => {
+            element.style.paddingRight = `${(e.target as HTMLInputElement).value}px`;
+          });
 
-            const paddingBottomInput = document.getElementById("padding-bottom-input") as HTMLInputElement;
-            paddingBottomInput?.addEventListener("input", (e) => {
-              element.style.paddingBottom = `${(e.target as HTMLInputElement).value}px`;
-            });
+          const paddingBottomInput = document.getElementById("padding-bottom-input") as HTMLInputElement;
+          paddingBottomInput?.addEventListener("input", (e) => {
+            element.style.paddingBottom = `${(e.target as HTMLInputElement).value}px`;
+          });
 
-            const paddingLeftInput = document.getElementById("padding-left-input") as HTMLInputElement;
-            paddingLeftInput?.addEventListener("input", (e) => {
-              element.style.paddingLeft = `${(e.target as HTMLInputElement).value}px`;
-            });
+          const paddingLeftInput = document.getElementById("padding-left-input") as HTMLInputElement;
+          paddingLeftInput?.addEventListener("input", (e) => {
+            element.style.paddingLeft = `${(e.target as HTMLInputElement).value}px`;
+          });
 
-            const marginInput = document.getElementById("margin-input") as HTMLInputElement;
-            marginInput?.addEventListener("input", (e) => {
+          const marginInput = document.getElementById("margin-input") as HTMLInputElement;
+          marginInput?.addEventListener("input", (e) => {
             element.style.margin = `${(e.target as HTMLInputElement).value}px`;
-            });
+          });
 
-            const bgColorInput = document.getElementById("background-color-input") as HTMLInputElement;
-            const bgColorHexInput = document.getElementById("background-color-hex-input") as HTMLInputElement;
-            bgColorInput?.addEventListener("input", (e) => {
-              const value = (e.target as HTMLInputElement).value;
+          const bgColorInput = document.getElementById("background-color-input") as HTMLInputElement;
+          const bgColorHexInput = document.getElementById("background-color-hex-input") as HTMLInputElement;
+          bgColorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
             element.style.backgroundColor = value;
-              if (bgColorHexInput) bgColorHexInput.value = value;
-            });
-            bgColorHexInput?.addEventListener("input", (e) => {
-              const value = (e.target as HTMLInputElement).value;
+            if (bgColorHexInput) bgColorHexInput.value = value;
+          });
+          bgColorHexInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
             element.style.backgroundColor = value;
-              if (bgColorInput) bgColorInput.value = value;
-            });
+            if (bgColorInput) bgColorInput.value = value;
+          });
 
           const borderWidthInput = document.getElementById("border-width-input") as HTMLInputElement;
           borderWidthInput?.addEventListener("input", (e) => {
@@ -1143,11 +1107,10 @@ const App = () => {
           displayInput?.addEventListener("change", (e) => {
             const value = (e.target as HTMLSelectElement).value;
             element.style.display = value;
-            
-            // Show/hide grid template inputs based on display value
+
             const gridTemplateColumnsInput = document.getElementById("grid-template-columns-input") as HTMLSelectElement;
             const gridTemplateRowsInput = document.getElementById("grid-template-rows-input") as HTMLSelectElement;
-            
+
             if (value === "grid") {
               if (!gridTemplateColumnsInput) {
                 const computedStyle = window.getComputedStyle(element);
@@ -1174,7 +1137,7 @@ const App = () => {
                   </div>
                 `;
                 displayInput.parentElement?.parentElement?.insertBefore(gridTemplateColumnsDiv, displayInput.parentElement.nextSibling);
-                
+
                 const gridTemplateRowsDiv = document.createElement("div");
                 gridTemplateRowsDiv.style.display = "flex";
                 gridTemplateRowsDiv.style.flexDirection = "column";
@@ -1196,15 +1159,14 @@ const App = () => {
                   </div>
                 `;
                 displayInput.parentElement?.parentElement?.insertBefore(gridTemplateRowsDiv, gridTemplateColumnsDiv.nextSibling);
-                
-                // Add event listeners for the new inputs
+
                 const newGridTemplateColumnsInput = document.getElementById("grid-template-columns-input") as HTMLSelectElement;
                 const newGridTemplateRowsInput = document.getElementById("grid-template-rows-input") as HTMLSelectElement;
                 const customGridColumnsInput = document.getElementById("custom-grid-columns-input") as HTMLInputElement;
                 const customGridRowsInput = document.getElementById("custom-grid-rows-input") as HTMLInputElement;
                 const customGridColumnsContainer = document.getElementById("custom-grid-columns-container") as HTMLDivElement;
                 const customGridRowsContainer = document.getElementById("custom-grid-rows-container") as HTMLDivElement;
-                
+
                 newGridTemplateColumnsInput?.addEventListener("change", (e) => {
                   const value = (e.target as HTMLSelectElement).value;
                   if (value === "custom") {
@@ -1218,7 +1180,7 @@ const App = () => {
                     element.style.gridTemplateColumns = value;
                   }
                 });
-                
+
                 newGridTemplateRowsInput?.addEventListener("change", (e) => {
                   const value = (e.target as HTMLSelectElement).value;
                   if (value === "custom") {
@@ -1232,11 +1194,11 @@ const App = () => {
                     element.style.gridTemplateRows = value;
                   }
                 });
-                
+
                 customGridColumnsInput?.addEventListener("input", (e) => {
                   element.style.gridTemplateColumns = (e.target as HTMLInputElement).value;
                 });
-                
+
                 customGridRowsInput?.addEventListener("input", (e) => {
                   element.style.gridTemplateRows = (e.target as HTMLInputElement).value;
                 });
@@ -1265,15 +1227,15 @@ const App = () => {
           const alignItemsInput = document.getElementById("align-items-input") as HTMLSelectElement;
           alignItemsInput?.addEventListener("change", (e) => {
             element.style.alignItems = (e.target as HTMLSelectElement).value;
-            });
+          });
 
-            const widthInput = document.getElementById("width-input") as HTMLInputElement;
-            widthInput?.addEventListener("input", (e) => {
+          const widthInput = document.getElementById("width-input") as HTMLInputElement;
+          widthInput?.addEventListener("input", (e) => {
             element.style.width = `${(e.target as HTMLInputElement).value}px`;
-            });
+          });
 
-            const heightInput = document.getElementById("height-input") as HTMLInputElement;
-            heightInput?.addEventListener("input", (e) => {
+          const heightInput = document.getElementById("height-input") as HTMLInputElement;
+          heightInput?.addEventListener("input", (e) => {
             element.style.height = `${(e.target as HTMLInputElement).value}px`;
           });
 
