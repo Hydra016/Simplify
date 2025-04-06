@@ -1,5 +1,6 @@
 {
     "manifest_version": 3,
+    "description": "Simplify devtools for your web development",
     "name": "Simplify",
     "version": "1.0.0",
     "action": {
