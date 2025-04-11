@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Tweaklify",
-    "description": "Tweaklify devtools for your web development",
+    "description": "Tweaklify your web experience. No code, just clicks.",
     "version": "1.0.1",
     "action": {
         "default_popup": "index.html"
