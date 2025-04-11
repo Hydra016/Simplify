@@ -64,19 +64,28 @@ const App = () => {
         dragHandle.style.borderTopRightRadius = "12px";
 
         const title = document.createElement("h3");
-        title.textContent = "Style Inspector";
         title.style.margin = "0";
         title.style.fontSize = "16px";
-        title.style.fontWeight = "600";
+        title.style.fontWeight = "800";
         title.style.color = "#212529";
         title.style.display = "flex";
         title.style.alignItems = "center";
-        title.style.gap = "8px";
+        title.style.fontFamily = "Inter";
 
-        const icon = document.createElement("span");
-        icon.innerHTML = "🎨";
-        icon.style.fontSize = "18px";
-        title.prepend(icon);
+        const textSpan = document.createElement("span");
+        textSpan.textContent = "Tweaklify";
+        
+        const dotSpan = document.createElement("span");
+        dotSpan.textContent = ".";
+        dotSpan.style.color = "#007bff";
+
+        title.appendChild(textSpan);
+        title.appendChild(dotSpan);
+
+        // const icon = document.createElement("span");
+        // icon.innerHTML = "🎨";
+        // icon.style.fontSize = "18px";
+        // title.prepend(icon);
 
         const closeButton = document.createElement("button");
         closeButton.id = "close-overlay";

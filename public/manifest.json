@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Simplify",
-    "description": "Simplify devtools for your web development",
-    "version": "1.0.0",
+    "name": "Tweaklify",
+    "description": "Tweaklify devtools for your web development",
+    "version": "1.0.1",
     "action": {
         "default_popup": "index.html"
     },
